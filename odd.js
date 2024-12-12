@@ -60,12 +60,15 @@ function RenderDuck() {
   state.allDuckArray[duck3].views++;
 }
 
+
 function handleDuckClick(event){
- if (Event.Target === duckContainer ) {
+ //if (event.target === duckContainer ) {
+  if (event.target.tagName !== 'IMG') {
   alert('please click on a image');
+  return;
  }
 clicks++;
-let clickDuck =Event.Target.alt;
+let clickDuck =event.target.alt;
  for (let i = 0; i < state.allDuckArray.length;i++){
   if (clickDuck=== state.allDuckArray[i].name) {
     state.allDuckArray[i].clicks++;
@@ -87,9 +90,14 @@ if (clicks === maxClicksAllowed){
 
 function renderResults(){
   let ul = document.querySelector('ul');
+  ul.innerHTML = '';
   for (let i = 0; i<state.allDuckArray.length; i++){
     let li = document.createElement('li');
+    li.textContent = `${state.allDuckArray[i].name}: ${state.allDuckArray[i].clicks} clicks and ${state.allDuckArray[i].views} views.`;
+    ul.appendChild(li);
   }
+  resultButton.removeEventListener('click', renderResults);
+  resultButton.className = 'results-shown';
 }
 
 //executable code 
@@ -116,6 +124,6 @@ state.allDuckArray.push(bag, banana, bathroom, boots, breakfast, bubblegum, chai
 
 RenderDuck();
 duckContainer.addEventListener('click', handleDuckClick);
-
-
-
+//console.log(resultButton);
+//resultButton.disabled = false;
+//resultButton.classList.add('clicks-allowed');

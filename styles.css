@@ -1,0 +1,86 @@
+* {
+box-sizing: border-box;
+}
+body{
+  font-family: Georgia, 'Times New Roman', Times, serif;
+  background-color: lightgoldenrodyellow;
+  color: rgb(45, 66, 80);
+}
+
+main{
+width: 1024px;
+margin: 5rem auto;
+display: grid;
+grid-template-columns: 250px 4fr;
+grid-template-rows: 6.5rem 10rem 20rem 40%;
+border: 23px;
+border-color: black;
+
+}
+#siteLogo {
+  width: 250px;
+  z-index: 2;
+  grid-row-start: 1;
+  grid-row-end: 3;
+  grid-column-start: 1;
+  grid-column-end: 3,
+}
+h1{
+  font-size: 5REM;
+  color: rgb(177, 224, 245);
+  line-height: .8;
+  margin: 3rem 0 1rem;
+  grid-row-start: 1;
+  grid-row-end: 3;
+  grid-column-start: 2;
+  grid-column-end: 3;
+}
+
+section{
+  background-color: lightgoldenrodyellow;
+  grid-row-start: 2;
+  grid-row-end: 4;
+  grid-column-start:1;
+  grid-column-end:3;
+  padding: 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+
+
+section img {
+  width: 360px;
+  max-height: 20rem;
+  /*-- aide accessiblity by preventing layout shift 
+  by adding a transparent border when a border is 
+  added in :hover styles --*/
+  border: 5px solid transparent;
+}
+
+section img:hover{
+  border: 5px dashed rgb(177, 224, 245);
+  cursor:pointer
+}
+
+section.no-voting img:hover{
+  border: 5px solid rgb(147, 234, 145);
+  cursor: none;
+}
+
+ul{
+  margin:1rem;
+}
+li{
+  margin: 5rem;
+}
+section + div{
+background-color: rgb(25, 25, 153);
+color: rgb(5, 5, 45);
+padding: 15px;
+width: 150px;
+height: 150px;
+font-size: 2rem;
+margin: 2rem;
+}
