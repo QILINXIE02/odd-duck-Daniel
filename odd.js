@@ -2,20 +2,17 @@
 
 //global veribles
 
-let duckContainer = document.querySelector ('section');
-let resultButton = document.querySelector ('section + div');
+let duckContainer = document.querySelector('section');
+let resultButton = document.querySelector('section + div');
 let img1 = document.querySelector('Section img:first-child');
 let img2 = document.querySelector('section img:nth-child(2)');
 let img3 = document.querySelector('section img:nth-child(3)');
 
-
 let clicks = 0;
-let maxClicksAllowed =25;
+let maxClicksAllowed = 25;
 let uniqueImageCount = 3; // Number of unique images to display at a time
 
-
 // State object holds the holds the current state of the application (all existing Goats)
-
 const state = {
   allDuckArray: [],
   indexArray: [],
@@ -24,24 +21,21 @@ const state = {
 //function logic
 
 function Duck(name, src) {
-this.name = name;
-this.src = src;
-this.view = 0;
-this.likes = 0;
+  this.name = name;
+  this.src = src;
+  this.view = 0;
+  this.likes = 0;
 }
-
 
 function getRandomNumber() {
   return Math.floor(Math.random() * state.allDuckArray.length);
 }
 
-
 function RenderDuck() {
-  while (state.indexArray.length < uniqueImageCount){
+  while (state.indexArray.length < uniqueImageCount) {
     let randomNumber = getRandomNumber();
-    if (!state.indexArray.includes(randomNumber)){
-      state.indexArray.push (randomNumber);
-      
+    if (!state.indexArray.includes(randomNumber)) {
+      state.indexArray.push(randomNumber);
     }
   }
   console.log(state.indexArray);
@@ -49,17 +43,6 @@ function RenderDuck() {
   let duck1 = state.indexArray.shift();
   let duck2 = state.indexArray.shift();
   let duck3 = state.indexArray.shift();
-  // Call getRandomNumber to get three unique indices
-  //let duck1 = getRandomNumber(); - 12/12/24
- // let duck2 = getRandomNumber(); -12/12/24
- // let duck3 = getRandomNumber(); - 12/12/24
-
-  // Ensure all three indices are unique - 12/12/24
-  //while (duck1 === duck2 || duck1 === duck3 || duck2 === duck3) { - 12/12/24
-   // duck2 = getRandomNumber(); - 12/12/24
-    //duck3 = getRandomNumber(); - 12/12/24
- // } - 12/12/24
-
   // Assign the images and alt attributes
   img1.src = state.allDuckArray[duck1].src;
   img2.src = state.allDuckArray[duck2].src;
@@ -74,99 +57,93 @@ function RenderDuck() {
   state.allDuckArray[duck3].views++;
 }
 
-
-function handleDuckClick(event){
- //if (event.target === duckContainer ) {
+function handleDuckClick(event) {
   if (event.target.tagName !== 'IMG') {
-  alert('please click on a image');
-  return;
- }
-clicks++;
-let likesDuck =event.target.alt;
- for (let i = 0; i < state.allDuckArray.length;i++){
-  if (likesDuck=== state.allDuckArray[i].name) {
-    state.allDuckArray[i].clicks++;
-    break;
+    alert('please click on an image');
+    return;
   }
- }
-if (clicks === maxClicksAllowed){
-  duckContainer.removeEventListener('click', handleDuckClick);
-   // give the button an event lister and styles so the user
-    // knows its an active button:
-    renderChart(); // here I removerd the button function and changed it for a chart 
-} else {
-  RenderDuck();
+  clicks++;
+  let likesDuck = event.target.alt;
+  for (let i = 0; i < state.allDuckArray.length; i++) {
+    if (likesDuck === state.allDuckArray[i].name) {
+      state.allDuckArray[i].likes++;
+      break;
+    }
+  }
+  if (clicks === maxClicksAllowed) {
+    duckContainer.removeEventListener('click', handleDuckClick);
+    renderChart(); // here I removed the button function and changed it for a chart 
+  } else {
+    RenderDuck();
+  }
 }
 
-}
-
-function renderResults(){          
+function renderResults() {
   let ul = document.querySelector('ul');
   ul.innerHTML = '';
-  for (let i = 0; i<state.allDuckArray.length; i++){
+  for (let i = 0; i < state.allDuckArray.length; i++) {
     let li = document.createElement('li');
-    li.textContent = `${state.allDuckArray[i].name}: ${state.allDuckArray[i].likesDuck} clicks and ${state.allDuckArray[i].views} views.`;
+    li.textContent = `${state.allDuckArray[i].name}: ${state.allDuckArray[i].likes} clicks and ${state.allDuckArray[i].views} views.`;
     ul.appendChild(li);
   }
   resultButton.removeEventListener('click', renderResults);
   resultButton.className = 'results-shown';
-}                                      
-
-function renderChart(){
-let duckNames = [];
-let ducklikes = [];
-let duckviews = [];
-
-for (let i = 0; i< state.allDuckArray.length; i++){
-  duckNames.push(state.allDuckArray[i].name);
-  ducklikes.push(state.allDuckArray[i].likes);
-  duckviews.push(state.allDuckArray[i].views);
 }
-const data ={
-  labels: duckNames,
-  datasets:[{
-    label: 'likes',
-    data:ducklikes,
-    backgroundColor:[
-      'rgba(98, 105, 192, 0.2)'
-    ],
-    borderColor: [
-      'rgb(147, 163, 28)'
-    ],
-    borderWidth: 1 
+function renderChart() {
+  let duckNames = [];
+  let duckLikes = [];
+  let duckViews = [];
 
-  },
-  {
-    label:'views',
-    data:duckviews,
-    backgroundColor: [ 
-      'rgba(255 , 159 , 64 , 0.2)'
-    ],
-    borderColor:[
-      'rgb(255,159,64)'
-    ],
-    borderWidth:1
-  }]
-};
-const config ={
-  type : 'bar',
-  data: data,
-  options:{
-    scales:{
-      y:{
-        beginAtZero:true
+  for (let i = 0; i < state.allDuckArray.length; i++) {
+    duckNames.push(state.allDuckArray[i].name);
+    duckLikes.push(state.allDuckArray[i].likes);
+    duckViews.push(state.allDuckArray[i].views);
+  }
+
+  const data = {
+    labels: duckNames,
+    datasets: [{
+      label: 'Likes',
+      data: duckLikes,
+      backgroundColor: ['rgba(98, 105, 192, 0.2)'],
+      borderColor: ['rgb(147, 163, 28)'],
+      borderWidth: 1
+    },
+    {
+      label: 'Views',
+      data: duckViews,
+      backgroundColor: ['rgba(255, 159, 64, 0.2)'],
+      borderColor: ['rgb(255, 159, 64)'],
+      borderWidth: 1
+    }]
+  };
+
+  const config = {
+    type: 'bar',
+    data: data,
+    options: {
+      scales: {
+        y: {
+          beginAtZero: true
+        }
       }
     }
-  },
-};
-let canvasChart = document.getElementById('myChart');
-if (!canvasChart) {
-  canvasChart = document.createElement('canvas');
-  canvasChart.id = 'theChart';
-  document.body.appendChild(canvasChart);
-}  
-new Chart(canvasChart,config);
+  };
+
+  let canvasChart = document.getElementById('theChart');
+  if (!canvasChart) {
+    canvasChart = document.createElement('canvas');
+    canvasChart.id = 'theChart';
+    document.body.appendChild(canvasChart);
+  }
+
+  // Set the canvas width and height here
+  canvasChart.width = 800;  // Width in pixels
+  canvasChart.height = 600; // Height in pixels
+
+  new Chart(canvasChart, config);
 }
+
 
 //executable code 
 let bag = new Duck('bag', './images/bag.jpg');
@@ -192,7 +169,3 @@ state.allDuckArray.push(bag, banana, bathroom, boots, breakfast, bubblegum, chai
 
 RenderDuck();
 duckContainer.addEventListener('click', handleDuckClick);
-//console.log(resultButton);
-//resultButton.disabled = false;
-//resultButton.classList.add('clicks-allowed');
-
