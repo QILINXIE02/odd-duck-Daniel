@@ -11,12 +11,14 @@ let img3 = document.querySelector('section img:nth-child(3)');
 
 let clicks = 0;
 let maxClicksAllowed =25;
+let uniqueImageCount = 3; // Number of unique images to display at a time
 
 
 // State object holds the holds the current state of the application (all existing Goats)
 
 const state = {
   allDuckArray: [],
+  indexArray: [],
 };
 
 //function logic
@@ -25,7 +27,7 @@ function Duck(name, src) {
 this.name = name;
 this.src = src;
 this.view = 0;
-this.clicks = 0;
+this.likes = 0;
 }
 
 
@@ -35,16 +37,28 @@ function getRandomNumber() {
 
 
 function RenderDuck() {
-  // Call getRandomNumber to get three unique indices
-  let duck1 = getRandomNumber();
-  let duck2 = getRandomNumber();
-  let duck3 = getRandomNumber();
-
-  // Ensure all three indices are unique
-  while (duck1 === duck2 || duck1 === duck3 || duck2 === duck3) {
-    duck2 = getRandomNumber();
-    duck3 = getRandomNumber();
+  while (state.indexArray.length < uniqueImageCount){
+    let randomNumber = getRandomNumber();
+    if (!state.indexArray.includes(randomNumber)){
+      state.indexArray.push (randomNumber);
+      
+    }
   }
+  console.log(state.indexArray);
+
+  let duck1 = state.indexArray.shift();
+  let duck2 = state.indexArray.shift();
+  let duck3 = state.indexArray.shift();
+  // Call getRandomNumber to get three unique indices
+  //let duck1 = getRandomNumber(); - 12/12/24
+ // let duck2 = getRandomNumber(); -12/12/24
+ // let duck3 = getRandomNumber(); - 12/12/24
+
+  // Ensure all three indices are unique - 12/12/24
+  //while (duck1 === duck2 || duck1 === duck3 || duck2 === duck3) { - 12/12/24
+   // duck2 = getRandomNumber(); - 12/12/24
+    //duck3 = getRandomNumber(); - 12/12/24
+ // } - 12/12/24
 
   // Assign the images and alt attributes
   img1.src = state.allDuckArray[duck1].src;
@@ -68,9 +82,9 @@ function handleDuckClick(event){
   return;
  }
 clicks++;
-let clickDuck =event.target.alt;
+let likesDuck =event.target.alt;
  for (let i = 0; i < state.allDuckArray.length;i++){
-  if (clickDuck=== state.allDuckArray[i].name) {
+  if (likesDuck=== state.allDuckArray[i].name) {
     state.allDuckArray[i].clicks++;
     break;
   }
@@ -79,25 +93,79 @@ if (clicks === maxClicksAllowed){
   duckContainer.removeEventListener('click', handleDuckClick);
    // give the button an event lister and styles so the user
     // knows its an active button:
-    resultButton.addEventListener('click', renderResults);
-    resultButton.className = 'clicks-allowed';
-    duckContainer.className = 'no voting';
+    renderChart(); // here I removerd the button function and changed it for a chart 
 } else {
   RenderDuck();
 }
 
 }
 
-function renderResults(){
+function renderResults(){          
   let ul = document.querySelector('ul');
   ul.innerHTML = '';
   for (let i = 0; i<state.allDuckArray.length; i++){
     let li = document.createElement('li');
-    li.textContent = `${state.allDuckArray[i].name}: ${state.allDuckArray[i].clicks} clicks and ${state.allDuckArray[i].views} views.`;
+    li.textContent = `${state.allDuckArray[i].name}: ${state.allDuckArray[i].likesDuck} clicks and ${state.allDuckArray[i].views} views.`;
     ul.appendChild(li);
   }
   resultButton.removeEventListener('click', renderResults);
   resultButton.className = 'results-shown';
+}                                      
+
+function renderChart(){
+let duckNames = [];
+let ducklikes = [];
+let duckviews = [];
+
+for (let i = 0; i< state.allDuckArray.length; i++){
+  duckNames.push(state.allDuckArray[i].name);
+  ducklikes.push(state.allDuckArray[i].likes);
+  duckviews.push(state.allDuckArray[i].views);
+}
+const data ={
+  labels: duckNames,
+  datasets:[{
+    label: 'likes',
+    data:ducklikes,
+    backgroundColor:[
+      'rgba(98, 105, 192, 0.2)'
+    ],
+    borderColor: [
+      'rgb(147, 163, 28)'
+    ],
+    borderWidth: 1 
+
+  },
+  {
+    label:'views',
+    data:duckviews,
+    backgroundColor: [ 
+      'rgba(255 , 159 , 64 , 0.2)'
+    ],
+    borderColor:[
+      'rgb(255,159,64)'
+    ],
+    borderWidth:1
+  }]
+};
+const config ={
+  type : 'bar',
+  data: data,
+  options:{
+    scales:{
+      y:{
+        beginAtZero:true
+      }
+    }
+  },
+};
+let canvasChart = document.getElementById('myChart');
+if (!canvasChart) {
+  canvasChart = document.createElement('canvas');
+  canvasChart.id = 'theChart';
+  document.body.appendChild(canvasChart);
+}  
+new Chart(canvasChart,config);
 }
 
 //executable code 
@@ -127,3 +195,4 @@ duckContainer.addEventListener('click', handleDuckClick);
 //console.log(resultButton);
 //resultButton.disabled = false;
 //resultButton.classList.add('clicks-allowed');
+
